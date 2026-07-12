@@ -1,0 +1,432 @@
+            <!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد پیمانکار - سامانه مناقصه</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.yellow {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+        }
+
+        .stat-card.purple {
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #10B981;
+        }
+
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .project-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .project-card:hover {
+            border-color: #10B981;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+        }
+
+        .project-card.submitted {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-color: #10B981;
+        }
+
+        .project-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .project-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .meta-item strong {
+            color: #1e293b;
+        }
+
+        .requirements {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            border-right: 4px solid #10B981;
+        }
+
+        .requirements-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .requirements-list {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .submitted-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #10B981;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .deadline-warning {
+            color: #DC2626;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .search-bar { flex-direction: column; }
+            .search-input { min-width: 100%; }
+            .project-actions { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏗️ پنل پیمانکار</div>
+            <div class="header-right">
+                <div class="user-menu" id="userMenu">👤 در حال بارگذاری...</div>
+                <button class="btn" style="color: white; background: rgba(255,255,255,0.2); border: none;" onclick="logout()">خروج</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-number" id="statSubmitted">0</div>
+                    <div class="stat-label">پیشنهاد ثبت شده</div>
+                </div>
+                <div class="stat-card yellow">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-number" id="statPending">0</div>
+                    <div class="stat-label">در حال بررسی</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-number" id="statWon">0</div>
+                    <div class="stat-label">پروژه برنده شده</div>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" class="search-input" id="searchInput" placeholder="🔍 جستجوی پروژه...">
+            </div>
+
+            <h2 style="margin-bottom: 20px; color: #1e293b; font-size: 24px;">🔥 مناقصات فعال</h2>
+
+            <div class="projects-list" id="projectsList">
+                <div class="empty-state">در حال بارگذاری پروژه‌ها...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const sb = supabase.createClient(
+            'https://hencbjwhoobvytfnlguy.supabase.co',
+            'sb_publishable_jqdXv1YVG5MbxBjy7jAQlA_wFGHGfaD'
+        );
+
+        let currentUser = null;
+        let allProjects = [];
+        let myProposals = [];
+
+        function formatMoney(n) {
+            if (n === null || n === undefined) return '-';
+            return Number(n).toLocaleString('fa-IR') + ' تومان';
+        }
+
+        function daysLeft(deadline) {
+            if (!deadline) return null;
+            const diff = Math.ceil((new Date(deadline) - new Date()) / (1000 * 60 * 60 * 24));
+            return diff;
+        }
+
+        function renderProjects(filterText) {
+            const list = document.getElementById('projectsList');
+            list.innerHTML = '';
+
+            const filtered = allProjects.filter(function (p) {
+                if (!filterText) return true;
+                return (p.title + ' ' + (p.description || '')).includes(filterText);
+            });
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="empty-state">در حال حاضر پروژه بازی برای نمایش نیست.</div>';
+                return;
+            }
+
+            filtered.forEach(function (p) {
+                const myProposal = myProposals.find(function (pr) { return pr.project_id === p.id; });
+                const dLeft = daysLeft(p.deadline);
+
+                const card = document.createElement('div');
+                card.className = 'project-card' + (myProposal ? ' submitted' : '');
+
+                let actionsHtml = '';
+                if (myProposal) {
+                    actionsHtml =
+                        '<div class="submitted-badge">✅ شما پیشنهاد ثبت کرده‌اید: ' + formatMoney(myProposal.price) + '</div>' +
+                        '<div class="project-actions">' +
+                        '<button class="btn btn-secondary" onclick="location.href=\'submit-price.html?project=' + p.id + '\'">✏️ ویرایش پیشنهاد</button>' +
+                        '</div>';
+                } else {
+                    actionsHtml =
+                        '<div class="project-actions">' +
+                        '<button class="btn btn-primary" onclick="location.href=\'submit-price.html?project=' + p.id + '\'">💰 ثبت پیشنهاد قیمت</button>' +
+                        '</div>';
+                }
+
+                card.innerHTML =
+                    '<div class="project-title">🏪 ' + p.title + '</div>' +
+                    '<div class="project-meta">' +
+                    '<div class="meta-item">💰 بودجه تخمینی: <strong>' + formatMoney(p.budget_estimate) + '</strong></div>' +
+                    '<div class="meta-item' + (dLeft !== null && dLeft <= 5 ? ' deadline-warning' : '') + '">⏰ مهلت: <strong>' + (dLeft !== null ? dLeft + ' روز مانده' : 'نامشخص') + '</strong></div>' +
+                    '</div>' +
+                    (p.description ? '<div class="requirements"><div class="requirements-title">📋 توضیحات پروژه:</div><div class="requirements-list">' + p.description + '</div></div>' : '') +
+                    actionsHtml;
+
+                list.appendChild(card);
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('statSubmitted').textContent = myProposals.length;
+            document.getElementById('statPending').textContent = myProposals.filter(function (p) { return p.status === 'pending'; }).length;
+            document.getElementById('statWon').textContent = myProposals.filter(function (p) { return p.status === 'accepted'; }).length;
+        }
+
+        async function logout() {
+            await sb.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        async function init() {
+            const sessionResult = await sb.auth.getSession();
+            const session = sessionResult.data.session;
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = session.user;
+
+            const profileResult = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+            const profile = profileResult.data;
+            if (profile && profile.role !== 'contractor') {
+                window.location.href = 'admin-dashboard.html';
+                return;
+            }
+
+            document.getElementById('userMenu').textContent = '👤 ' + (profile && profile.company_name ? profile.company_name : currentUser.email);
+
+            const projectsResult = await sb.from('projects').select('*').eq('status', 'open').order('created_at', { ascending: false });
+            allProjects = projectsResult.data || [];
+
+            const proposalsResult = await sb.from('proposals').select('*').eq('contractor_id', currentUser.id);
+            myProposals = proposalsResult.data || [];
+
+            updateStats();
+            renderProjects('');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            renderProjects(e.target.value);
+        });
+
+        init();
+    </script>
+</body>
+</html>
+
+
