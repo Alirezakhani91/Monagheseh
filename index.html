@@ -501,113 +501,80 @@
     </div>
 
     <script>
-        let currentRole = 'admin';
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+    const sb = supabase.createClient(
+        'https://hencbjwhoobvytfnlguy.supabase.co',
+        'sb_publishable_jqdXv1YVG5MbxBjy7jAQlA_wFGHGfaD'
+    );
 
-        // Tab Switching
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                currentRole = this.dataset.role;
-                
-                // Change placeholder based on role
-                const emailInput = document.getElementById('username');
-                if (currentRole === 'admin') {
-                    emailInput.placeholder = 'admin@dailymarket.com';
-                } else {
-                    emailInput.placeholder = 'contractor@example.com';
-                }
-            });
+    let currentRole = 'admin';
+
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            currentRole = this.dataset.role;
+            document.getElementById('username').placeholder =
+                currentRole === 'admin' ? 'admin@dailymarket.com' : 'contractor@example.com';
         });
+    });
 
-        // Toggle Password Visibility
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.querySelector('.password-toggle');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.textContent = '🙈';
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.textContent = '👁️';
-            }
+    function togglePassword() {
+        const input = document.getElementById('password');
+        const icon = document.querySelector('.password-toggle');
+        input.type = input.type === 'password' ? 'text' : 'password';
+        icon.textContent = input.type === 'password' ? '👁️' : '🙈';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const btn = document.querySelector('.btn-login');
+        const alertBox = document.getElementById('alertBox');
+        btn.classList.add('loading');
+
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+        if (error) {
+            btn.classList.remove('loading');
+            alertBox.className = 'alert error';
+            alertBox.textContent = '❌ ایمیل یا رمز عبور اشتباه است!';
+            alertBox.style.display = 'block';
+            return;
         }
 
-        // Form Submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
-            const loginBtn = document.querySelector('.btn-login');
-            const alertBox = document.getElementById('alertBox');
+        const { data: profile } = await sb.from('profiles').select('role').eq('id', data.user.id).single();
+        btn.classList.remove('loading');
+        alertBox.className = 'alert success';
+        alertBox.textContent = '✅ ورود موفقیت‌آمیز! در حال انتقال...';
+        alertBox.style.display = 'block';
 
-            // Show loading
-            loginBtn.classList.add('loading');
+        setTimeout(() => {
+            window.location.href = (profile && profile.role === 'admin') ? 'admin-dashboard.html' : 'contractor-dashboard.html';
+        }, 1000);
+    });
 
-            // Simulate API call
-            setTimeout(() => {
-                loginBtn.classList.remove('loading');
+    async function showRegisterModal() {
+        const companyName = prompt('نام شرکت:'); if (!companyName) return;
+        const fullName = prompt('نام و نام‌خانوادگی:'); if (!fullName) return;
+        const phone = prompt('شماره تماس:'); if (!phone) return;
+        const email = prompt('ایمیل:'); if (!email) return;
+        const password = prompt('رمز عبور (حداقل ۶ کاراکتر):'); if (!password) return;
 
-                // Demo credentials
-                const validCredentials = {
-                    admin: { username: 'admin@dailymarket.com', password: 'admin123' },
-                    contractor: { username: 'contractor@example.com', password: 'contractor123' }
-                };
+        const { data, error } = await sb.auth.signUp({ email, password });
+        if (error) { alert('❌ خطا: ' + error.message); return; }
 
-                if (username === validCredentials[currentRole].username && 
-                    password === validCredentials[currentRole].password) {
-                    
-                    // Success
-                    alertBox.className = 'alert success';
-                    alertBox.textContent = '✅ ورود موفقیت‌آمیز! در حال انتقال...';
-                    alertBox.style.display = 'block';
-
-                    setTimeout(() => {
-                        if (currentRole === 'admin') {
-                            window.location.href = 'admin-dashboard.html';
-                        } else {
-                            window.location.href = 'contractor-dashboard.html';
-                        }
-                    }, 1500);
-
-                } else {
-                    // Error
-                    alertBox.className = 'alert error';
-                    alertBox.textContent = '❌ نام کاربری یا رمز عبور اشتباه است!';
-                    alertBox.style.display = 'block';
-
-                    // Shake animation
-                    document.querySelector('.login-container').style.animation = 'shake 0.5s';
-                    setTimeout(() => {
-                        document.querySelector('.login-container').style.animation = '';
-                    }, 500);
-                }
-            }, 1500);
+        const { error: profileError } = await sb.from('profiles').insert({
+            id: data.user.id, role: 'contractor', full_name: fullName, company_name: companyName, phone
         });
+        if (profileError) { alert('❌ خطا در ثبت پروفایل: ' + profileError.message); return; }
 
-        // Shake animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-10px); }
-                75% { transform: translateX(10px); }
-            }
-        `;
-        document.head.appendChild(style);
+        alert('✅ ثبت‌نام موفق! حالا وارد شوید.');
+    }
+</script>
 
-        // Show Register Modal
-        function showRegisterModal() {
-            alert('📝 صفحه ثبت‌نام پیمانکار\n\nبرای ثبت‌نام به عنوان پیمانکار، لطفاً اطلاعات زیر را وارد کنید:\n\n• نام شرکت\n• شماره ثبت\n• کد ملی مدیرعامل\n• شماره تماس\n• ایمیل\n• آدرس\n\nپس از بررسی مدارک، حساب شما فعال خواهد شد.');
-        }
-
-        // Demo Credentials Helper
-        console.log('Demo Credentials:');
-        console.log('Admin: admin@dailymarket.com / admin123');
-        console.log('Contractor: contractor@example.com / contractor123');
     </script>
 </body>
 </html>
