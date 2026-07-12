@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ایجاد پروژه جدید - سامانه مناقصه</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2563EB 0%, #1e40af 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 { font-size: 20px; }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .form-body { padding: 35px; }
+
+        .form-group { margin-bottom: 22px; }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            background: #f8fafc;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #2563EB;
+            background: white;
+        }
+
+        .form-textarea { min-height: 120px; resize: vertical; }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #2563EB 0%, #1e40af 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn:hover { box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.error { background: #fee2e2; color: #dc2626; border: 2px solid #fca5a5; }
+        .alert.success { background: #d1fae5; color: #059669; border: 2px solid #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 ایجاد پروژه / مناقصه جدید</h1>
+            <a href="admin-dashboard.html" class="back-link">← بازگشت به داشبورد</a>
+        </div>
+        <div class="form-body">
+            <div class="alert error" id="alertBox"></div>
+            <form id="projectForm">
+                <div class="form-group">
+                    <label class="form-label">عنوان پروژه</label>
+                    <input type="text" class="form-input" id="title" placeholder="مثلاً: فروشگاه ونک - تهران" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">توضیحات و نیازمندی‌ها (آدرس، متراژ، تجهیزات مورد نیاز و...)</label>
+                    <textarea class="form-textarea" id="description" placeholder="آدرس، متراژ، لیست تجهیزات مورد نیاز و..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">بودجه تخمینی (تومان)</label>
+                    <input type="number" class="form-input" id="budget" placeholder="مثلاً 450000000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">مهلت ارسال پیشنهاد</label>
+                    <input type="date" class="form-input" id="deadline">
+                </div>
+                <button type="submit" class="btn">✅ ایجاد پروژه</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const sb = supabase.createClient(
+            'https://hencbjwhoobvytfnlguy.supabase.co',
+            'sb_publishable_jqdXv1YVG5MbxBjy7jAQlA_wFGHGfaD'
+        );
+
+        let currentUserId = null;
+
+        async function guard() {
+            const sessionResult = await sb.auth.getSession();
+            const session = sessionResult.data.session;
+            if (!session) { window.location.href = 'index.html'; return; }
+
+            const profileResult = await sb.from('profiles').select('role').eq('id', session.user.id).single();
+            if (!profileResult.data || profileResult.data.role !== 'admin') {
+                window.location.href = 'contractor-dashboard.html';
+                return;
+            }
+            currentUserId = session.user.id;
+        }
+
+        document.getElementById('projectForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const alertBox = document.getElementById('alertBox');
+
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const budget = document.getElementById('budget').value;
+            const deadline = document.getElementById('deadline').value;
+
+            const insertResult = await sb.from('projects').insert({
+                title: title,
+                description: description,
+                budget_estimate: budget ? Number(budget) : null,
+                deadline: deadline || null,
+                status: 'open',
+                created_by: currentUserId
+            });
+
+            if (insertResult.error) {
+                alertBox.className = 'alert error';
+                alertBox.textContent = '❌ خطا: ' + insertResult.error.message;
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            alertBox.className = 'alert success';
+            alertBox.textContent = '✅ پروژه با موفقیت ایجاد شد! در حال انتقال...';
+            alertBox.style.display = 'block';
+
+            setTimeout(function () {
+                window.location.href = 'admin-dashboard.html';
+            }, 1200);
+        });
+
+        guard();
+    </script>
+</body>
+</html>

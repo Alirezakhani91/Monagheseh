@@ -27,7 +27,6 @@
             overflow: hidden;
         }
 
-        /* Header */
         .header {
             background: linear-gradient(135deg, #2563EB 0%, #1e40af 100%);
             color: white;
@@ -51,76 +50,18 @@
             gap: 20px;
         }
 
-        .notification-badge {
-            position: relative;
-            cursor: pointer;
-            font-size: 20px;
-        }
-
-        .notification-badge .badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #EF4444;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .user-menu {
             display: flex;
             align-items: center;
             gap: 10px;
-            cursor: pointer;
             padding: 8px 15px;
             border-radius: 8px;
-            transition: background 0.3s;
         }
 
-        .user-menu:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        /* Navigation */
-        .nav-tabs {
-            background: #f8fafc;
-            padding: 0 30px;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            gap: 5px;
-        }
-
-        .nav-tab {
-            padding: 15px 25px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            font-weight: 500;
-            color: #64748b;
-        }
-
-        .nav-tab.active {
-            color: #2563EB;
-            border-bottom-color: #2563EB;
-            background: white;
-        }
-
-        .nav-tab:hover {
-            color: #2563EB;
-            background: white;
-        }
-
-        /* Main Content */
         .main-content {
             padding: 30px;
         }
 
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -169,7 +110,6 @@
             opacity: 0.9;
         }
 
-        /* Projects Section */
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -206,7 +146,6 @@
             transform: translateY(-2px);
         }
 
-        /* Project Cards */
         .projects-list {
             display: flex;
             flex-direction: column;
@@ -227,13 +166,6 @@
             transform: translateY(-2px);
         }
 
-        .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
-        }
-
         .project-title {
             font-size: 20px;
             font-weight: bold;
@@ -251,28 +183,14 @@
             font-weight: 600;
         }
 
-        .status-badge.active {
+        .status-badge.open {
             background: #fee2e2;
             color: #dc2626;
         }
 
-        .status-badge.pending {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .status-badge.awarded {
+        .status-badge.closed {
             background: #d1fae5;
             color: #059669;
-        }
-
-        .project-address {
-            color: #64748b;
-            font-size: 14px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
         .project-meta {
@@ -309,268 +227,161 @@
             border: 1px solid #e2e8f0;
         }
 
-        .btn-secondary:hover {
-            background: #e2e8f0;
-            border-color: #cbd5e1;
-        }
-
         .btn-success {
             background: linear-gradient(135deg, #10B981 0%, #059669 100%);
             color: white;
         }
 
-        .btn-success:hover {
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
         }
 
-        /* Divider */
-        .divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, #e2e8f0, transparent);
-            margin: 20px 0;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .project-meta {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .project-actions {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .nav-tabs {
-                overflow-x: auto;
-            }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .project-meta { flex-direction: column; gap: 10px; }
+            .project-actions { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
         }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .project-card {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
-        .stat-card:nth-child(5) { animation-delay: 0.5s; }
-        .stat-card:nth-child(6) { animation-delay: 0.6s; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <div class="logo">
-                🏢 سامانه مناقصه دیلی مارکت
-            </div>
+            <div class="logo">🏢 سامانه مناقصه دیلی مارکت</div>
             <div class="header-right">
-                <div class="notification-badge">
-                    🔔
-                    <span class="badge">3</span>
-                </div>
-                <div class="user-menu">
-                    👤 مدیر سیستم ▼
-                </div>
-                <button class="btn btn-secondary" style="color: white; background: rgba(255,255,255,0.2); border: none;">خروج</button>
+                <div class="user-menu" id="userMenu">👤 در حال بارگذاری...</div>
+                <button class="btn" style="color: white; background: rgba(255,255,255,0.2); border: none;" onclick="logout()">خروج</button>
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <div class="nav-tab active">📊 داشبورد</div>
-            <div class="nav-tab">📋 پروژه‌ها</div>
-            <div class="nav-tab">👷 پیمانکاران</div>
-            <div class="nav-tab">📊 گزارشات</div>
-            <div class="nav-tab">⚙️ تنظیمات</div>
-        </div>
-
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">📦</div>
-                    <div class="stat-number">12</div>
+                    <div class="stat-number" id="statOpen">0</div>
                     <div class="stat-label">پروژه فعال</div>
-                </div>
-                <div class="stat-card yellow">
-                    <div class="stat-icon">⏳</div>
-                    <div class="stat-number">8</div>
-                    <div class="stat-label">در انتظار بررسی</div>
                 </div>
                 <div class="stat-card green">
                     <div class="stat-icon">✅</div>
-                    <div class="stat-number">15</div>
-                    <div class="stat-label">تکمیل شده</div>
+                    <div class="stat-number" id="statClosed">0</div>
+                    <div class="stat-label">بسته شده</div>
                 </div>
                 <div class="stat-card blue">
                     <div class="stat-icon">👷</div>
-                    <div class="stat-number">45</div>
-                    <div class="stat-label">پیمانکار فعال</div>
+                    <div class="stat-number" id="statContractors">0</div>
+                    <div class="stat-label">پیمانکار ثبت‌نام شده</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-number">2.4</div>
-                    <div class="stat-label">میلیارد بودجه کل</div>
-                </div>
-                <div class="stat-card green">
-                    <div class="stat-icon">📈</div>
-                    <div class="stat-number">+12%</div>
-                    <div class="stat-label">رشد ماهانه</div>
+                <div class="stat-card yellow">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-number" id="statProposals">0</div>
+                    <div class="stat-label">کل پیشنهادات دریافتی</div>
                 </div>
             </div>
 
-            <!-- Projects Section -->
             <div class="section-header">
                 <h2 class="section-title">پروژه‌های اخیر</h2>
-                <button class="btn btn-primary">+ ایجاد پروژه جدید</button>
+                <button class="btn btn-primary" onclick="location.href='create-project.html'">+ ایجاد پروژه جدید</button>
             </div>
 
-            <div class="projects-list">
-                <!-- Project Card 1 -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div>
-                            <div class="project-title">
-                                🏪 فروشگاه ونک - تهران
-                                <span class="status-badge active">🔴 فعال</span>
-                            </div>
-                            <div class="project-address">
-                                📍 تهران، ونک، خیابان ملاصدرا
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="project-meta">
-                        <div class="meta-item">
-                            💰 بودجه تخمینی: <strong>450 میلیون تومان</strong>
-                        </div>
-                        <div class="meta-item">
-                            ⏰ مهلت: <strong>5 روز مانده</strong>
-                        </div>
-                        <div class="meta-item">
-                            📊 تعداد پیشنهادات: <strong>8</strong>
-                        </div>
-                        <div class="meta-item">
-                            💵 کمترین قیمت: <strong>420 میلیون</strong>
-                        </div>
-                    </div>
-
-                    <div class="project-actions">
-                        <button class="btn btn-secondary">مشاهده جزئیات</button>
-                        <button class="btn btn-success">مشاهده پیشنهادات (8)</button>
-                    </div>
-                </div>
-
-                <!-- Project Card 2 -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div>
-                            <div class="project-title">
-                                🏪 فروشگاه اصفهان سیتی سنتر
-                                <span class="status-badge pending">🟡 در انتظار</span>
-                            </div>
-                            <div class="project-address">
-                                📍 اصفهان، چهارباغ عباسی
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="project-meta">
-                        <div class="meta-item">
-                            💰 بودجه تخمینی: <strong>680 میلیون تومان</strong>
-                        </div>
-                        <div class="meta-item">
-                            ⏰ مهلت: <strong>12 روز مانده</strong>
-                        </div>
-                        <div class="meta-item">
-                            📊 تعداد پیشنهادات: <strong>3</strong>
-                        </div>
-                        <div class="meta-item">
-                            💵 کمترین قیمت: <strong>650 میلیون</strong>
-                        </div>
-                    </div>
-
-                    <div class="project-actions">
-                        <button class="btn btn-secondary">مشاهده جزئیات</button>
-                        <button class="btn btn-success">مشاهده پیشنهادات (3)</button>
-                    </div>
-                </div>
-
-                <!-- Project Card 3 -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div>
-                            <div class="project-title">
-                                🏪 فروشگاه شیراز مولوی
-                                <span class="status-badge awarded">✅ برنده اعلام شد</span>
-                            </div>
-                            <div class="project-address">
-                                📍 شیراز، خیابان مولوی
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="project-meta">
-                        <div class="meta-item">
-                            💰 قیمت نهایی: <strong>380 میلیون تومان</strong>
-                        </div>
-                        <div class="meta-item">
-                            🏆 برنده: <strong>شرکت ساختمانی آرمان</strong>
-                        </div>
-                        <div class="meta-item">
-                            📊 تعداد پیشنهادات: <strong>12</strong>
-                        </div>
-                        <div class="meta-item">
-                            📅 تاریخ اعلام: <strong>1403/02/05</strong>
-                        </div>
-                    </div>
-
-                    <div class="project-actions">
-                        <button class="btn btn-secondary">مشاهده جزئیات</button>
-                        <button class="btn btn-primary">مشاهده قرارداد</button>
-                    </div>
-                </div>
+            <div class="projects-list" id="projectsList">
+                <div class="empty-state">در حال بارگذاری پروژه‌ها...</div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        // Add interactivity
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+        const sb = supabase.createClient(
+            'https://hencbjwhoobvytfnlguy.supabase.co',
+            'sb_publishable_jqdXv1YVG5MbxBjy7jAQlA_wFGHGfaD'
+        );
 
-        // Notification badge click
-        document.querySelector('.notification-badge').addEventListener('click', function() {
-            alert('شما 3 اعلان جدید دارید:\n\n1. پروژه جدید ثبت شد\n2. پیشنهاد جدید دریافت شد\n3. مهلت پروژه ونک نزدیک است');
-        });
+        function formatMoney(n) {
+            if (n === null || n === undefined) return '-';
+            return Number(n).toLocaleString('fa-IR') + ' تومان';
+        }
+
+        function daysLeft(deadline) {
+            if (!deadline) return null;
+            return Math.ceil((new Date(deadline) - new Date()) / (1000 * 60 * 60 * 24));
+        }
+
+        async function logout() {
+            await sb.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        async function renderProjects() {
+            const list = document.getElementById('projectsList');
+
+            const projectsResult = await sb.from('projects').select('*').order('created_at', { ascending: false });
+            const projects = projectsResult.data || [];
+
+            const proposalsResult = await sb.from('proposals').select('*');
+            const allProposals = proposalsResult.data || [];
+
+            document.getElementById('statOpen').textContent = projects.filter(function (p) { return p.status === 'open'; }).length;
+            document.getElementById('statClosed').textContent = projects.filter(function (p) { return p.status === 'closed'; }).length;
+            document.getElementById('statProposals').textContent = allProposals.length;
+
+            const contractorsResult = await sb.from('profiles').select('id').eq('role', 'contractor');
+            document.getElementById('statContractors').textContent = (contractorsResult.data || []).length;
+
+            list.innerHTML = '';
+
+            if (projects.length === 0) {
+                list.innerHTML = '<div class="empty-state">هنوز پروژه‌ای ایجاد نکرده‌اید. روی «ایجاد پروژه جدید» بزنید.</div>';
+                return;
+            }
+
+            projects.forEach(function (p) {
+                const projectProposals = allProposals.filter(function (pr) { return pr.project_id === p.id; });
+                let minPrice = null;
+                projectProposals.forEach(function (pr) {
+                    if (minPrice === null || pr.price < minPrice) minPrice = pr.price;
+                });
+                const dLeft = daysLeft(p.deadline);
+
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML =
+                    '<div class="project-title">🏪 ' + p.title +
+                    ' <span class="status-badge ' + p.status + '">' + (p.status === 'open' ? '🔴 فعال' : '✅ بسته شده') + '</span></div>' +
+                    '<div class="project-meta">' +
+                    '<div class="meta-item">💰 بودجه تخمینی: <strong>' + formatMoney(p.budget_estimate) + '</strong></div>' +
+                    '<div class="meta-item">⏰ مهلت: <strong>' + (dLeft !== null ? dLeft + ' روز مانده' : 'نامشخص') + '</strong></div>' +
+                    '<div class="meta-item">📊 تعداد پیشنهادات: <strong>' + projectProposals.length + '</strong></div>' +
+                    '<div class="meta-item">💵 کمترین قیمت: <strong>' + (minPrice !== null ? formatMoney(minPrice) : '-') + '</strong></div>' +
+                    '</div>' +
+                    '<div class="project-actions">' +
+                    '<button class="btn btn-success" onclick="location.href=\'compare-proposals.html?project=' + p.id + '\'">مشاهده پیشنهادات (' + projectProposals.length + ')</button>' +
+                    '</div>';
+                list.appendChild(card);
+            });
+        }
+
+        async function init() {
+            const sessionResult = await sb.auth.getSession();
+            const session = sessionResult.data.session;
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const profileResult = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+            const profile = profileResult.data;
+            if (!profile || profile.role !== 'admin') {
+                window.location.href = 'contractor-dashboard.html';
+                return;
+            }
+
+            document.getElementById('userMenu').textContent = '👤 ' + (profile.full_name || 'مدیر سیستم');
+            renderProjects();
+        }
+
+        init();
     </script>
 </body>
 </html>
