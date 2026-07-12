@@ -189,7 +189,8 @@
             document.getElementById('projectInfo').innerHTML =
                 '<h2>🏪 ' + project.title + '</h2>' +
                 '<div class="meta">💰 بودجه تخمینی: <strong>' + formatMoney(project.budget_estimate) + '</strong>' +
-                (project.status === 'closed' ? ' &nbsp;|&nbsp; ✅ این پروژه بسته شده است' : '') + '</div>';
+                (project.status === 'closed' ? ' &nbsp;|&nbsp; ✅ این پروژه بسته شده است' : '') + '</div>' +
+                (project.file_url ? '<div class="meta" style="margin-top:8px;"><a href="' + project.file_url + '" target="_blank" style="color:#2563EB;font-weight:600;text-decoration:none;">📎 دانلود فایل دستور کار (PDF)</a></div>' : '');
 
             const proposalsResult = await sb.from('proposals').select('*').eq('project_id', projectId).order('price', { ascending: true });
             const proposals = proposalsResult.data || [];

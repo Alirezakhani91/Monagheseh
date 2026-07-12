@@ -1,4 +1,4 @@
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -375,6 +375,7 @@
                     '<div class="meta-item' + (dLeft !== null && dLeft <= 5 ? ' deadline-warning' : '') + '">⏰ مهلت: <strong>' + (dLeft !== null ? dLeft + ' روز مانده' : 'نامشخص') + '</strong></div>' +
                     '</div>' +
                     (p.description ? '<div class="requirements"><div class="requirements-title">📋 توضیحات پروژه:</div><div class="requirements-list">' + p.description + '</div></div>' : '') +
+                    (p.file_url ? '<div class="requirements"><a href="' + p.file_url + '" target="_blank" style="color:#10B981;font-weight:600;text-decoration:none;">📎 دانلود فایل دستور کار (PDF)</a></div>' : '') +
                     actionsHtml;
 
                 list.appendChild(card);
@@ -428,5 +429,3 @@
     </script>
 </body>
 </html>
-
-

@@ -121,7 +121,11 @@
                     <label class="form-label">مهلت ارسال پیشنهاد</label>
                     <input type="date" class="form-input" id="deadline">
                 </div>
-                <button type="submit" class="btn">✅ ایجاد پروژه</button>
+                <div class="form-group">
+                    <label class="form-label">فایل دستور کار (PDF) - اختیاری</label>
+                    <input type="file" class="form-input" id="workOrderFile" accept="application/pdf">
+                </div>
+                <button type="submit" class="btn" id="submitBtn">✅ ایجاد پروژه</button>
             </form>
         </div>
     </div>
@@ -151,11 +155,35 @@
         document.getElementById('projectForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             const alertBox = document.getElementById('alertBox');
+            const submitBtn = document.getElementById('submitBtn');
 
             const title = document.getElementById('title').value;
             const description = document.getElementById('description').value;
             const budget = document.getElementById('budget').value;
             const deadline = document.getElementById('deadline').value;
+            const fileInput = document.getElementById('workOrderFile');
+            const file = fileInput.files[0];
+
+            let fileUrl = null;
+
+            if (file) {
+                submitBtn.textContent = 'در حال آپلود فایل...';
+                const filePath = Date.now() + '_' + file.name;
+                const uploadResult = await sb.storage.from('project-files').upload(filePath, file);
+
+                if (uploadResult.error) {
+                    alertBox.className = 'alert error';
+                    alertBox.textContent = '❌ خطا در آپلود فایل: ' + uploadResult.error.message;
+                    alertBox.style.display = 'block';
+                    submitBtn.textContent = '✅ ایجاد پروژه';
+                    return;
+                }
+
+                const publicUrlResult = sb.storage.from('project-files').getPublicUrl(filePath);
+                fileUrl = publicUrlResult.data.publicUrl;
+            }
+
+            submitBtn.textContent = 'در حال ذخیره پروژه...';
 
             const insertResult = await sb.from('projects').insert({
                 title: title,
@@ -163,13 +191,15 @@
                 budget_estimate: budget ? Number(budget) : null,
                 deadline: deadline || null,
                 status: 'open',
-                created_by: currentUserId
+                created_by: currentUserId,
+                file_url: fileUrl
             });
 
             if (insertResult.error) {
                 alertBox.className = 'alert error';
                 alertBox.textContent = '❌ خطا: ' + insertResult.error.message;
                 alertBox.style.display = 'block';
+                submitBtn.textContent = '✅ ایجاد پروژه';
                 return;
             }
 
