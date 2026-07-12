@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثبت پیشنهاد قیمت</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 { font-size: 20px; }
+
+        .back-link { color: white; text-decoration: none; font-size: 14px; opacity: 0.9; }
+
+        .project-info {
+            background: #f8fafc;
+            margin: 25px 30px 0;
+            padding: 20px;
+            border-radius: 12px;
+            border-right: 4px solid #10B981;
+        }
+
+        .project-info h2 { font-size: 18px; color: #1e293b; margin-bottom: 10px; }
+        .project-info p { color: #475569; font-size: 14px; line-height: 1.7; white-space: pre-line; }
+        .project-info .meta { margin-top: 10px; font-size: 14px; color: #475569; }
+
+        .form-body { padding: 25px 30px 35px; }
+
+        .form-group { margin-bottom: 22px; }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            background: #f8fafc;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #10B981;
+            background: white;
+        }
+
+        .form-textarea { min-height: 100px; resize: vertical; }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn:hover { box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 20px 30px 0;
+            display: none;
+        }
+
+        .alert.error { background: #fee2e2; color: #dc2626; border: 2px solid #fca5a5; }
+        .alert.success { background: #d1fae5; color: #059669; border: 2px solid #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 id="pageTitle">💰 ثبت پیشنهاد قیمت</h1>
+            <a href="contractor-dashboard.html" class="back-link">← بازگشت به داشبورد</a>
+        </div>
+
+        <div class="project-info" id="projectInfo">
+            <h2>در حال بارگذاری اطلاعات پروژه...</h2>
+        </div>
+
+        <div class="alert error" id="alertBox"></div>
+
+        <div class="form-body">
+            <form id="proposalForm">
+                <div class="form-group">
+                    <label class="form-label">قیمت پیشنهادی (تومان)</label>
+                    <input type="number" class="form-input" id="price" placeholder="مثلاً 420000000" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">مدت زمان اجرا (روز)</label>
+                    <input type="number" class="form-input" id="duration" placeholder="مثلاً 30">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">توضیحات تکمیلی (اختیاری)</label>
+                    <textarea class="form-textarea" id="notes" placeholder="توضیحات، شرایط پرداخت، تضمین کیفیت و..."></textarea>
+                </div>
+                <button type="submit" class="btn" id="submitBtn">✅ ثبت پیشنهاد</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const sb = supabase.createClient(
+            'https://hencbjwhoobvytfnlguy.supabase.co',
+            'sb_publishable_jqdXv1YVG5MbxBjy7jAQlA_wFGHGfaD'
+        );
+
+        const params = new URLSearchParams(window.location.search);
+        const projectId = params.get('project');
+        let currentUserId = null;
+
+        function formatMoney(n) {
+            if (n === null || n === undefined) return '-';
+            return Number(n).toLocaleString('fa-IR') + ' تومان';
+        }
+
+        async function init() {
+            if (!projectId) {
+                document.getElementById('projectInfo').innerHTML = '<h2>❌ پروژه‌ای مشخص نشده است.</h2>';
+                return;
+            }
+
+            const sessionResult = await sb.auth.getSession();
+            const session = sessionResult.data.session;
+            if (!session) { window.location.href = 'index.html'; return; }
+            currentUserId = session.user.id;
+
+            const projectResult = await sb.from('projects').select('*').eq('id', projectId).single();
+            const project = projectResult.data;
+
+            if (!project) {
+                document.getElementById('projectInfo').innerHTML = '<h2>❌ پروژه یافت نشد.</h2>';
+                return;
+            }
+
+            document.title = 'ثبت پیشنهاد قیمت - ' + project.title;
+            document.getElementById('projectInfo').innerHTML =
+                '<h2>🏪 ' + project.title + '</h2>' +
+                (project.description ? '<p>' + project.description + '</p>' : '') +
+                '<div class="meta">💰 بودجه تخمینی: <strong>' + formatMoney(project.budget_estimate) + '</strong></div>';
+
+            const existingResult = await sb.from('proposals').select('*')
+                .eq('project_id', projectId)
+                .eq('contractor_id', currentUserId)
+                .maybeSingle();
+
+            const existing = existingResult.data;
+            if (existing) {
+                document.getElementById('pageTitle').textContent = '✏️ ویرایش پیشنهاد قیمت';
+                document.getElementById('submitBtn').textContent = '✅ به‌روزرسانی پیشنهاد';
+                document.getElementById('price').value = existing.price;
+                document.getElementById('duration').value = existing.duration_days || '';
+                document.getElementById('notes').value = existing.notes || '';
+            }
+        }
+
+        document.getElementById('proposalForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const alertBox = document.getElementById('alertBox');
+
+            const price = Number(document.getElementById('price').value);
+            const duration = document.getElementById('duration').value;
+            const notes = document.getElementById('notes').value;
+
+            const upsertResult = await sb.from('proposals').upsert({
+                project_id: projectId,
+                contractor_id: currentUserId,
+                price: price,
+                duration_days: duration ? Number(duration) : null,
+                notes: notes,
+                status: 'pending'
+            }, { onConflict: 'project_id,contractor_id' });
+
+            if (upsertResult.error) {
+                alertBox.className = 'alert error';
+                alertBox.textContent = '❌ خطا: ' + upsertResult.error.message;
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            alertBox.className = 'alert success';
+            alertBox.textContent = '✅ پیشنهاد شما با موفقیت ثبت شد! در حال انتقال...';
+            alertBox.style.display = 'block';
+
+            setTimeout(function () {
+                window.location.href = 'contractor-dashboard.html';
+            }, 1200);
+        });
+
+        init();
+    </script>
+</body>
+</html>
