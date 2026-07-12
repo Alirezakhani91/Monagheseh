@@ -488,8 +488,8 @@
 
                 <!-- Register Link -->
                 <div class="register-link">
-                    حساب کاربری ندارید؟ 
-                    <a href="#" onclick="showRegisterModal()">ثبت‌نام پیمانکار جدید</a>
+                    حساب کاربری ندارید؟
+                    <a href="#" onclick="showRegisterModal(); return false;">ثبت‌نام پیمانکار جدید</a>
                 </div>
             </form>
         </div>
@@ -500,81 +500,103 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script>
-    const sb = supabase.createClient(
-        'https://hencbjwhoobvytfnlguy.supabase.co',
-        'sb_publishable_jqdXv1YVG5MbxBjy7jAQlA_wFGHGfaD'
-    );
+        const sb = supabase.createClient(
+            'https://hencbjwhoobvytfnlguy.supabase.co',
+            'sb_publishable_jqdXv1YVG5MbxBjy7jAQlA_wFGHGfaD'
+        );
 
-    let currentRole = 'admin';
+        let currentRole = 'admin';
 
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            currentRole = this.dataset.role;
-            document.getElementById('username').placeholder =
-                currentRole === 'admin' ? 'admin@dailymarket.com' : 'contractor@example.com';
+        document.querySelectorAll('.tab').forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+                this.classList.add('active');
+                currentRole = this.dataset.role;
+                const emailInput = document.getElementById('username');
+                emailInput.placeholder = currentRole === 'admin' ? 'admin@dailymarket.com' : 'contractor@example.com';
+            });
         });
-    });
 
-    function togglePassword() {
-        const input = document.getElementById('password');
-        const icon = document.querySelector('.password-toggle');
-        input.type = input.type === 'password' ? 'text' : 'password';
-        icon.textContent = input.type === 'password' ? '👁️' : '🙈';
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const email = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const btn = document.querySelector('.btn-login');
-        const alertBox = document.getElementById('alertBox');
-        btn.classList.add('loading');
-
-        const { data, error } = await sb.auth.signInWithPassword({ email, password });
-
-        if (error) {
-            btn.classList.remove('loading');
-            alertBox.className = 'alert error';
-            alertBox.textContent = '❌ ایمیل یا رمز عبور اشتباه است!';
-            alertBox.style.display = 'block';
-            return;
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.querySelector('.password-toggle');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                icon.textContent = '👁️';
+            }
         }
 
-        const { data: profile } = await sb.from('profiles').select('role').eq('id', data.user.id).single();
-        btn.classList.remove('loading');
-        alertBox.className = 'alert success';
-        alertBox.textContent = '✅ ورود موفقیت‌آمیز! در حال انتقال...';
-        alertBox.style.display = 'block';
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const btn = document.querySelector('.btn-login');
+            const alertBox = document.getElementById('alertBox');
+            btn.classList.add('loading');
 
-        setTimeout(() => {
-            window.location.href = (profile && profile.role === 'admin') ? 'admin-dashboard.html' : 'contractor-dashboard.html';
-        }, 1000);
-    });
+            const { data, error } = await sb.auth.signInWithPassword({ email: email, password: password });
 
-    async function showRegisterModal() {
-        const companyName = prompt('نام شرکت:'); if (!companyName) return;
-        const fullName = prompt('نام و نام‌خانوادگی:'); if (!fullName) return;
-        const phone = prompt('شماره تماس:'); if (!phone) return;
-        const email = prompt('ایمیل:'); if (!email) return;
-        const password = prompt('رمز عبور (حداقل ۶ کاراکتر):'); if (!password) return;
+            if (error) {
+                btn.classList.remove('loading');
+                alertBox.className = 'alert error';
+                alertBox.textContent = '❌ ایمیل یا رمز عبور اشتباه است! (' + error.message + ')';
+                alertBox.style.display = 'block';
+                return;
+            }
 
-        const { data, error } = await sb.auth.signUp({ email, password });
-        if (error) { alert('❌ خطا: ' + error.message); return; }
+            const profileResult = await sb.from('profiles').select('role').eq('id', data.user.id).single();
+            const profile = profileResult.data;
 
-        const { error: profileError } = await sb.from('profiles').insert({
-            id: data.user.id, role: 'contractor', full_name: fullName, company_name: companyName, phone
+            btn.classList.remove('loading');
+            alertBox.className = 'alert success';
+            alertBox.textContent = '✅ ورود موفقیت‌آمیز! در حال انتقال...';
+            alertBox.style.display = 'block';
+
+            setTimeout(function () {
+                window.location.href = (profile && profile.role === 'admin') ? 'admin-dashboard.html' : 'contractor-dashboard.html';
+            }, 1000);
         });
-        if (profileError) { alert('❌ خطا در ثبت پروفایل: ' + profileError.message); return; }
 
-        alert('✅ ثبت‌نام موفق! حالا وارد شوید.');
-    }
-</script>
+        async function showRegisterModal() {
+            const companyName = prompt('نام شرکت:');
+            if (!companyName) return;
+            const fullName = prompt('نام و نام‌خانوادگی:');
+            if (!fullName) return;
+            const phone = prompt('شماره تماس:');
+            if (!phone) return;
+            const email = prompt('ایمیل:');
+            if (!email) return;
+            const password = prompt('رمز عبور (حداقل ۶ کاراکتر):');
+            if (!password) return;
 
+            const signUpResult = await sb.auth.signUp({ email: email, password: password });
+            if (signUpResult.error) {
+                alert('❌ خطا: ' + signUpResult.error.message);
+                return;
+            }
+
+            const userId = signUpResult.data.user.id;
+            const insertResult = await sb.from('profiles').insert({
+                id: userId,
+                role: 'contractor',
+                full_name: fullName,
+                company_name: companyName,
+                phone: phone
+            });
+
+            if (insertResult.error) {
+                alert('❌ خطا در ثبت پروفایل: ' + insertResult.error.message);
+                return;
+            }
+
+            alert('✅ ثبت‌نام موفق! حالا وارد شوید.');
+        }
     </script>
 </body>
 </html>
+
