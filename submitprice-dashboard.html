@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثبت پیشنهاد قیمت - فروشگاه ونک</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, #2563EB 0%, #1e40af 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .form-content {
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .info-item strong {
+            color: #1e293b;
+        }
+
+        .requirements-list {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .requirement-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .requirement-item:last-child {
+            border-bottom: none;
+        }
+
+        .attachments {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .attachment-link {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #2563EB;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .attachment-link:hover {
+            background: #eff6ff;
+            border-color: #2563EB;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #EF4444;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .input-suffix {
+            position: absolute;
+            left: 20px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .input-hint {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #10B981;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .file-upload {
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .file-upload:hover {
+            border-color: #2563EB;
+            background: #eff6ff;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .uploaded-file {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #10B981;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 10px;
+            border: 2px solid #fbbf24;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            cursor: pointer;
+            color: #92400e;
+            font-weight: 500;
+        }
+
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-draft {
+            background: #fbbf24;
+            color: white;
+        }
+
+        .btn-draft:hover {
+            background: #f59e0b;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border-right: 4px solid #F59E0B;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #92400e;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .attachments {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: slideDown 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <button class="back-btn" onclick="history.back()">« بازگشت</button>
+            <div class="page-title">ثبت پیشنهاد قیمت - فروشگاه ونک تهران</div>
+        </div>
+
+        <!-- Form Content -->
+        <div class="form-content">
+            <!-- Project Info Section -->
+            <div class="section">
+                <div class="section-title">
+                    🏪 اطلاعات پروژه
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        🏢 نام: <strong>فروشگاه ونک - تهران</strong>
+                    </div>
+                    <div class="info-item">
+                        📏 متراژ: <strong>350 متر مربع</strong>
+                    </div>
+                    <div class="info-item">
+                        💰 بودجه تخمینی: <strong>450,000,000 تومان</strong>
+                    </div>
+                    <div class="info-item" style="color: #DC2626; font-weight: 600;">
+                        ⏰ مهلت: <strong>1403/02/15 ساعت 23:59</strong>
+                    </div>
+                </div>
+
+                <div class="info-item" style="margin-top: 10px;">
+                    📍 آدرس: <strong>تهران، ونک، خیابان ملاصدرا، پلاک 125</strong>
+                </div>
+
+                <div class="requirements-list">
+                    <strong style="display: block; margin-bottom: 10px; color: #1e293b;">📋 نیازمندی‌های پروژه:</strong>
+                    <div class="requirement-item">• یخچال و فریزر صنعتی (6 دستگاه)</div>
+                    <div class="requirement-item">• قفسه‌بندی و گاندولا (120 متر طولی)</div>
+                    <div class="requirement-item">• صندوق فروشگاهی (3 دستگاه)</div>
+                    <div class="requirement-item">• سیستم روشنایی LED کامل</div>
+                </div>
+
+                <div class="attachments">
+                    <strong style="width: 100%; margin-bottom: 10px; display: block;">📎 فایل‌های ضمیمه:</strong>
+                    <a href="#" class="attachment-link">
+                        📄 نقشه_فروشگاه.pdf
+                    </a>
+                    <a href="#" class="attachment-link">
+                        📄 لیست_تجهیزات.xlsx
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bid Form Section -->
+            <div class="section">
+                <div class="section-title">
+                    💼 پیشنهاد شما
+                </div>
+
+                <form id="bidForm">
+                    <!-- Price -->
+                    <div class="form-group">
+                        <label class="form-label">💰 قیمت پیشنهادی <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <input type="text" class="form-input" id="priceInput" placeholder="مثال: 420000000" value="420000000">
+                            <span class="input-suffix">تومان</span>
+                        </div>
+                        <div class="input-hint">
+                            💡 این قیمت <strong>6.7%</strong> کمتر از بودجه تخمینی است
+                        </div>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="form-group">
+                        <label class="form-label">⏱️ مدت زمان اجرا <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <input type="number" class="form-input" placeholder="مثال: 45" value="45">
+                            <span class="input-suffix">روز کاری</span>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label class="form-label">📝 توضیحات تکمیلی</label>
+                        <textarea class="form-input" placeholder="توضیحات خود درباره روش اجرا، تجهیزات، گارانتی و... را بنویسید">- استفاده از تجهیزات برند ایتالیایی
+- گارانتی 2 ساله کامل
+- تیم اجرایی 12 نفره متخصص</textarea>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="form-group">
+                        <label class="form-label">📎 فایل‌های پیوست (اختیاری)</label>
+                        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                            <input type="file" id="fileInput" multiple>
+                            <div style="font-size: 40px; margin-bottom: 10px;">📁</div>
+                            <div style="color: #64748b;">کلیک کنید یا فایل را اینجا بکشید</div>
+                            <div style="font-size: 12px; color: #94a3b8; margin-top: 5px;">
+                                PDF, DOC, XLS, PNG, JPG (حداکثر 10MB)
+                            </div>
+                        </div>
+                        <div class="uploaded-file">
+                            ✓ نمونه_کارها.pdf
+                        </div>
+                    </div>
+
+                    <!-- Terms Agreement -->
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="termsCheck">
+                        <label for="termsCheck">
+                            ☑ با قوانین و مقررات مناقصه موافقم و صحت اطلاعات ثبت شده را تایید می‌کنم
+                        </label>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel">
+                            ✕ انصراف
+                        </button>
+                        <button type="button" class="btn btn-draft">
+                            💾 ذخیره پیش‌نویس
+                        </button>
+                        <button type="submit" class="btn btn-submit">
+                            ✓ ثبت نهایی پیشنهاد
+                        </button>
+                    </div>
+
+                    <!-- Warning -->
+                    <div class="warning-box">
+                        ⚠️ توجه: پس از ثبت نهایی، تا قبل از مهلت می‌توانید پیشنهاد خود را ویرایش کنید
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Format price input
+        const priceInput = document.getElementById('priceInput');
+        priceInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/,/g, '');
+            if (!isNaN(value) && value !== '') {
+                e.target.value = parseInt(value).toLocaleString('en-US');
+            }
+        });
+
+        // File upload
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                alert(`${e.target.files.length} فایل انتخاب شد`);
+            }
+        });
+
+        // Form submission
+        document.getElementById('bidForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const termsCheck = document.getElementById('termsCheck');
+            if (!termsCheck.checked) {
+                alert('⚠️ لطفا قوانین و مقررات را مطالعه کرده و تایید کنید');
+                return;
+            }
+
+            if (confirm('✅ آیا از ثبت نهایی پیشنهاد خود اطمینان دارید؟')) {
+                alert('🎉 پیشنهاد شما با موفقیت ثبت شد!\n\nمیزان پیشنهادی: 420,000,000 تومان\nمدت اجرا: 45 روز\n\nشما از طریق ایمیل و پیامک از نتیجه مناقصه مطلع خواهید شد.');
+                window.history.back();
+            }
+        });
+
+        // Draft save
+        document.querySelector('.btn-draft').addEventListener('click', function() {
+            alert('💾 

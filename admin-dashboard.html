@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد ادمین - سامانه مناقصه دیلی مارکت</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2563EB 0%, #1e40af 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-badge {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .notification-badge .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .user-menu:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            background: #f8fafc;
+            padding: 0 30px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .nav-tab.active {
+            color: #2563EB;
+            border-bottom-color: #2563EB;
+            background: white;
+        }
+
+        .nav-tab:hover {
+            color: #2563EB;
+            background: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.green {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
+        .stat-card.yellow {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+        }
+
+        .stat-card.blue {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Projects Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563EB 0%, #1e40af 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Project Cards */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .project-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+        .project-card:hover {
+            border-color: #2563EB;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .project-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.awarded {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .project-address {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .project-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .meta-item strong {
+            color: #1e293b;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+            margin: 20px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .project-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .project-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-tabs {
+                overflow-x: auto;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        .stat-card:nth-child(5) { animation-delay: 0.5s; }
+        .stat-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                🏢 سامانه مناقصه دیلی مارکت
+            </div>
+            <div class="header-right">
+                <div class="notification-badge">
+                    🔔
+                    <span class="badge">3</span>
+                </div>
+                <div class="user-menu">
+                    👤 مدیر سیستم ▼
+                </div>
+                <button class="btn btn-secondary" style="color: white; background: rgba(255,255,255,0.2); border: none;">خروج</button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <div class="nav-tab active">📊 داشبورد</div>
+            <div class="nav-tab">📋 پروژه‌ها</div>
+            <div class="nav-tab">👷 پیمانکاران</div>
+            <div class="nav-tab">📊 گزارشات</div>
+            <div class="nav-tab">⚙️ تنظیمات</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">پروژه فعال</div>
+                </div>
+                <div class="stat-card yellow">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">در انتظار بررسی</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">تکمیل شده</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-icon">👷</div>
+                    <div class="stat-number">45</div>
+                    <div class="stat-label">پیمانکار فعال</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-number">2.4</div>
+                    <div class="stat-label">میلیارد بودجه کل</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-number">+12%</div>
+                    <div class="stat-label">رشد ماهانه</div>
+                </div>
+            </div>
+
+            <!-- Projects Section -->
+            <div class="section-header">
+                <h2 class="section-title">پروژه‌های اخیر</h2>
+                <button class="btn btn-primary">+ ایجاد پروژه جدید</button>
+            </div>
+
+            <div class="projects-list">
+                <!-- Project Card 1 -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div>
+                            <div class="project-title">
+                                🏪 فروشگاه ونک - تهران
+                                <span class="status-badge active">🔴 فعال</span>
+                            </div>
+                            <div class="project-address">
+                                📍 تهران، ونک، خیابان ملاصدرا
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-meta">
+                        <div class="meta-item">
+                            💰 بودجه تخمینی: <strong>450 میلیون تومان</strong>
+                        </div>
+                        <div class="meta-item">
+                            ⏰ مهلت: <strong>5 روز مانده</strong>
+                        </div>
+                        <div class="meta-item">
+                            📊 تعداد پیشنهادات: <strong>8</strong>
+                        </div>
+                        <div class="meta-item">
+                            💵 کمترین قیمت: <strong>420 میلیون</strong>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="btn btn-secondary">مشاهده جزئیات</button>
+                        <button class="btn btn-success">مشاهده پیشنهادات (8)</button>
+                    </div>
+                </div>
+
+                <!-- Project Card 2 -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div>
+                            <div class="project-title">
+                                🏪 فروشگاه اصفهان سیتی سنتر
+                                <span class="status-badge pending">🟡 در انتظار</span>
+                            </div>
+                            <div class="project-address">
+                                📍 اصفهان، چهارباغ عباسی
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-meta">
+                        <div class="meta-item">
+                            💰 بودجه تخمینی: <strong>680 میلیون تومان</strong>
+                        </div>
+                        <div class="meta-item">
+                            ⏰ مهلت: <strong>12 روز مانده</strong>
+                        </div>
+                        <div class="meta-item">
+                            📊 تعداد پیشنهادات: <strong>3</strong>
+                        </div>
+                        <div class="meta-item">
+                            💵 کمترین قیمت: <strong>650 میلیون</strong>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="btn btn-secondary">مشاهده جزئیات</button>
+                        <button class="btn btn-success">مشاهده پیشنهادات (3)</button>
+                    </div>
+                </div>
+
+                <!-- Project Card 3 -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div>
+                            <div class="project-title">
+                                🏪 فروشگاه شیراز مولوی
+                                <span class="status-badge awarded">✅ برنده اعلام شد</span>
+                            </div>
+                            <div class="project-address">
+                                📍 شیراز، خیابان مولوی
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-meta">
+                        <div class="meta-item">
+                            💰 قیمت نهایی: <strong>380 میلیون تومان</strong>
+                        </div>
+                        <div class="meta-item">
+                            🏆 برنده: <strong>شرکت ساختمانی آرمان</strong>
+                        </div>
+                        <div class="meta-item">
+                            📊 تعداد پیشنهادات: <strong>12</strong>
+                        </div>
+                        <div class="meta-item">
+                            📅 تاریخ اعلام: <strong>1403/02/05</strong>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="btn btn-secondary">مشاهده جزئیات</button>
+                        <button class="btn btn-primary">مشاهده قرارداد</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Notification badge click
+        document.querySelector('.notification-badge').addEventListener('click', function() {
+            alert('شما 3 اعلان جدید دارید:\n\n1. پروژه جدید ثبت شد\n2. پیشنهاد جدید دریافت شد\n3. مهلت پروژه ونک نزدیک است');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقایسه پیشنهادات - فروشگاه ونک</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, #2563EB 0%, #1e40af 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .project-info {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .project-info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 30px;
+            border-bottom: 2px solid #bae6fd;
+        }
+
+        .stats-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0c4a6e;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #0369a1;
+            font-size: 15px;
+        }
+
+        .stat-label {
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0c4a6e;
+        }
+
+        /* Chart */
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #7dd3fc;
+        }
+
+        .chart-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0c4a6e;
+            margin-bottom: 15px;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .chart-label {
+            min-width: 60px;
+            font-size: 13px;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .chart-bar-bg {
+            flex: 1;
+            background: #e0f2fe;
+            height: 25px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563EB 100%);
+            border-radius: 6px;
+            transition: width 1s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-left: 8px;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* Sorting */
+        .sorting-section {
+            padding: 20px 30px;
+            background: #f8fafc;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .sort-label {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .sort-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .sort-btn.active {
+            background: linear-gradient(135deg, #2563EB 0%, #1e40af 100%);
+            color: white;
+            border-color: #2563EB;
+        }
+
+        .sort-btn:hover:not(.active) {
+            border-color: #2563EB;
+            color: #2563EB;
+        }
+
+        /* Bids List */
+        .bids-container {
+            padding: 30px;
+        }
+
+        .bid-card {
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .bid-card:hover {
+            border-color: #2563EB;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .bid-card.winner {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-color: #10B981;
+            border-width: 4px;
+        }
+
+        .rank-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .rank-badge.gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        .rank-badge.silver {
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+        }
+
+        .rank-badge.bronze {
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+        }
+
+        .winner-badge {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .bid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .contractor-info {
+            flex: 1;
+        }
+
+        .contractor-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rating {
+            color: #fbbf24;
+            font-size: 16px;
+        }
+
+        .rating-score {
+            color: #64748b;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        .bid-price {
+            text-align: left;
+        }
+
+        .price-label {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .price-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2563EB;
+        }
+
+        .price-diff {
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .price-diff.positive {
+            color: #10B981;
+        }
+
+        .price-diff.negative {
+            color: #EF4444;
+        }
+
+        .bid-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .meta-item strong {
+            color: #1e293b;
+        }
+
+        .bid-description {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-right: 4px solid #3b82f6;
+            margin-bottom: 15px;
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .bid-attachments {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .attachment {
+            background: #eff6ff;
+            padding: 8px 15px;
+            border-radius: 8px;
+            color: #2563EB;
+            font-size: 13px;
+            border: 1px solid #bfdbfe;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .attachment:hover {
+            background: #2563EB;
+            color: white;
+        }
+
+        .bid-history {
+            background: #fef3c7;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #92400e;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bid-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-view {
+            background: #f1f5f9;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+            flex: 1;
+        }
+
+        .btn-view:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-message {
+            background: #3b82f6;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-message:hover {
+            background: #2563EB;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-award {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            flex: 2;
+        }
+
+        .btn-award:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sorting-section {
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .bid-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .bid-price {
+                text-align: right;
+            }
+
+            .bid-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bid-card {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .bid-card:nth-child(1) { animation-delay: 0.1s; }
+        .bid-card:nth-child(2) { animation-delay: 0.2s; }
+        .bid-card:nth-child(3) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="header-top">
+                <div class="page-title">📊 مقایسه پیشنهادات - فروشگاه ونک تهران</div>
+                <button class="back-btn" onclick="history.back()">« بازگشت</button>
+            </div>
+            <div class="project-info">
+                <div class="project-info-item">🏪 فروشگاه ونک - تهران</div>
+                <div class="project-info-item">📊 8 پیشنهاد دریافت شده</div>
+                <div class="project-info-item">⏰ بسته شده</div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stats-title">📈 آمار پیشنهادات</div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">💰 میانگین قیمت:</span>
+                    <span class="stat-value">438 میلیون</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">🔽 کمترین قیمت:</span>
+                    <span class="stat-value" style="color: #10B981;">420 میلیون</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">🔼 بیشترین قیمت:</span>
+                    <span class="stat-value" style="color: #EF4444;">465 میلیون</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">📉 انحراف معیار:</span>
+                    <span class="stat-value">15 میلیون</span>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📊 نمودار توزیع قیمت‌ها (میلیون تومان)</div>
+                <div class="chart-bar">
+                    <span class="chart-label">420M</span>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: 70%;">2 پیشنهاد</div>
+                    </div>
+                </div>
+                <div class="chart-bar">
+                    <span class="chart-label">430M</span>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: 90%;">3 پیشنهاد</div>
+                    </div>
+                </div>
+                <div class="chart-bar">
+                    <span class="chart-label">440M</span>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: 50%;">1 پیشنهاد</div>
+                    </div>
+                </div>
+                <div class="chart-bar">
+                    <span class="chart-label">450M</span>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: 60%;">1 پیشنهاد</div>
+                    </div>
+                </div>
+                <div class="chart-bar">
+                    <span class="chart-label">465M</span>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: 40%;">1 پیشنهاد</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sorting -->
+        <div class="sorting-section">
+            <span class="sort-label">⭐ مرتب‌سازی:</span>
+            <button class="sort-btn active">کمترین قیمت</button>
+            <button class="sort-btn">بیشترین امتیاز</button>
+            <button class="sort-btn">کمترین زمان اجرا</button>
+            <button class="sort-btn">تاریخ ثبت</button>
+        </div>
+
+        <!-- Bids List -->
+        <div class="bids-container">
+            <!-- Bid Card 1 - Winner -->
+            <div class="bid-card winner">
+                <span class="rank-badge gold">🥇 رتبه 1</span>
+                <span class="winner-badge">🏆 پیشنهاد برتر</span>
+
+                <div class="bid-header">
+                    <div class="contractor-info">
+                        <div class="contractor-name">
+                            👷 شرکت ساختمانی پارس
+                            <span class="rating">
+                                ⭐⭐⭐⭐⭐
+                                <span class="rating-score">(4.8)</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bid-price">
+                        <div class="price-label">قیمت پیشنهادی</div>
+                        <div class="price-value">420,000,000</div>
+                        <div class="price-diff positive">↓ 6.7% کمتر از بودجه</div>
+                    </div>
+                </div>
+
+                <div class="bid-meta">
+                    <div class="meta-item">
+                        ⏱️ مدت اجرا: <strong>45 روز</strong>
+                    </div>
+                    <div class="meta-item">
+                        📅 تاریخ ثبت: <strong>1403/02/10</strong>
+                    </div>
+                    <div class="meta-item">
+                        📊 سابقه: <strong>12 پروژه موفق</strong>
+                    </div>
+                    <div class="meta-item">
+                        ✅ وضعیت: <strong style="color: #10B981;">تایید شده</strong>
+                    </div>
+                </div>
+
+                <div class="bid-description">
+                    📝 <strong>توضیحات:</strong><br>
+                    • استفاده از تجهیزات برند ایتالیایی با گارانتی معتبر<br>
+                    • گارانتی 2 ساله کامل شامل قطعات و خدمات<br>
+                    • تیم اجرایی 12 نفره متخصص با تجربه بالا<br>
+                    • امکان شروع فوری پروژه
+                </div>
+
+                <div class="bid-attachments">
+                    <div class="attachment">📄 نمونه_کارها.pdf</div>
+                    <div class="attachment">📄 گواهینامه_ها.pdf</div>
+                    <div class="attachment">📄 پروفایل_شرکت.pdf</div>
+                </div>
+
+                <div class="bid-history">
+                    📊 این پیمانکار 12 پروژه با دیلی مارکت انجام داده و رضایت 96% دارد
+                </div>
+
+                <div class="bid-actions">
+                    <button class="btn btn-view">📄 مشاهده جزئیات کامل</button>
+                    <button class="btn btn-message">💬 ارسال 
