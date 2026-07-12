@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثبت‌نام پیمانکار - سامانه مناقصه دیلی مارکت</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .register-header {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 35px 30px;
+            text-align: center;
+        }
+
+        .register-header .logo { font-size: 50px; margin-bottom: 10px; }
+        .register-header h1 { font-size: 22px; margin-bottom: 6px; }
+        .register-header p { font-size: 14px; opacity: 0.9; }
+
+        .register-form { padding: 35px; }
+
+        .form-group { margin-bottom: 20px; }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #f8fafc;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #10B981;
+            background: white;
+        }
+
+        .hint { font-size: 12px; color: #94a3b8; margin-top: 5px; }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .btn:hover { box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); }
+        .btn.loading { pointer-events: none; opacity: 0.7; }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.error { background: #fee2e2; color: #dc2626; border: 2px solid #fca5a5; }
+        .alert.success { background: #d1fae5; color: #059669; border: 2px solid #6ee7b7; }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .login-link a { color: #10B981; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <div class="logo">👷</div>
+            <h1>ثبت‌نام پیمانکار جدید</h1>
+            <p>عضویت در سامانه مناقصه دیلی مارکت</p>
+        </div>
+
+        <div class="register-form">
+            <div class="alert error" id="alertBox"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">نام و نام‌خانوادگی</label>
+                    <input type="text" class="form-input" id="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">نام شرکت</label>
+                    <input type="text" class="form-input" id="companyName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">شماره تماس</label>
+                    <input type="tel" class="form-input" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ایمیل</label>
+                    <input type="email" class="form-input" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">رمز عبور</label>
+                    <input type="password" class="form-input" id="password" required>
+                    <div class="hint">حداقل ۶ کاراکتر</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">تکرار رمز عبور</label>
+                    <input type="password" class="form-input" id="passwordConfirm" required>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">✅ ثبت‌نام</button>
+            </form>
+
+            <div class="login-link">
+                قبلاً ثبت‌نام کرده‌اید؟ <a href="index.html">ورود به سیستم</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const sb = supabase.createClient(
+            'https://hencbjwhoobvytfnlguy.supabase.co',
+            'sb_publishable_jqdXv1YVG5MbxBjy7jAQlA_wFGHGfaD'
+        );
+
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const alertBox = document.getElementById('alertBox');
+            const btn = document.getElementById('submitBtn');
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const companyName = document.getElementById('companyName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+            alertBox.style.display = 'none';
+
+            if (password.length < 6) {
+                alertBox.className = 'alert error';
+                alertBox.textContent = '❌ رمز عبور باید حداقل ۶ کاراکتر باشد.';
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                alertBox.className = 'alert error';
+                alertBox.textContent = '❌ رمز عبور و تکرار آن یکسان نیستند.';
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            btn.classList.add('loading');
+            btn.textContent = 'در حال ثبت‌نام...';
+
+            const signUpResult = await sb.auth.signUp({ email: email, password: password });
+
+            if (signUpResult.error) {
+                btn.classList.remove('loading');
+                btn.textContent = '✅ ثبت‌نام';
+                alertBox.className = 'alert error';
+                alertBox.textContent = '❌ خطا: ' + signUpResult.error.message;
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            const userId = signUpResult.data.user.id;
+            const insertResult = await sb.from('profiles').insert({
+                id: userId,
+                role: 'contractor',
+                full_name: fullName,
+                company_name: companyName,
+                phone: phone
+            });
+
+            btn.classList.remove('loading');
+            btn.textContent = '✅ ثبت‌نام';
+
+            if (insertResult.error) {
+                alertBox.className = 'alert error';
+                alertBox.textContent = '❌ خطا در ثبت پروفایل: ' + insertResult.error.message;
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            alertBox.className = 'alert success';
+            alertBox.textContent = '✅ ثبت‌نام موفق! در حال انتقال به صفحه ورود...';
+            alertBox.style.display = 'block';
+
+            setTimeout(function () {
+                window.location.href = 'index.html';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
